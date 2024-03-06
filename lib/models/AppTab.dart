@@ -2,25 +2,25 @@ import 'package:flutter/cupertino.dart';
 import 'package:wanandroid/data/icons.dart';
 import 'package:flutter_gen/gen_l10n/wan_android_localizations.dart';
 
-enum BottomItem {
+enum AppTab {
   home(icon: WanAndroidIcons.home),
   questions(icon: WanAndroidIcons.questions),
   architecture(icon: WanAndroidIcons.architecture),
   me(icon: WanAndroidIcons.me);
 
-  const BottomItem({required this.icon});
+  const AppTab({required this.icon});
 
   final IconData icon;
 
   String displayName(WanAndroidLocalizations localizations) {
     switch (this) {
-      case BottomItem.home:
+      case AppTab.home:
         return localizations.home;
-      case BottomItem.questions:
+      case AppTab.questions:
         return localizations.questions;
-      case BottomItem.architecture:
+      case AppTab.architecture:
         return localizations.architecture;
-      case BottomItem.me:
+      case AppTab.me:
         return localizations.me;
     }
   }

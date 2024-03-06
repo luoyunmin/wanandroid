@@ -36,13 +36,25 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
+  # json序列化
   json_annotation: ^4.8.1
   shared_preferences: ^2.2.2
+  # 网络
   dio: ^5.4.0
   provider: ^6.1.1
   cached_network_image: ^3.3.1
+  # 多语言
   intl: any
+  # 日志
+  logger: ^2.0.2+1
+  # 应用图标配置 launcher_icon.yaml
+  flutter_launcher_icons: ^0.13.1
+  # 应用版本配置
+  package_info_plus: ^5.0.1
+  # 轮播图
+  flutter_swiper_null_safety: ^1.0.2
+  # 网页
+  webview_flutter: ^4.5.0
 
 dev_dependencies:
   flutter_test:
@@ -70,11 +82,13 @@ flutter:
   uses-material-design: true
   generate: true
   fonts:
-     - family: WanAndroidIcons
-       fonts:
-         - asset: fonts/WanAndroidIcons.ttf
+    - family: WanAndroidIcons
+      fonts:
+        - asset: fonts/WanAndroidIcons.ttf
   assets:
     - fonts/WanAndroidIcons.ttf
+    - images/launcher_icon.png
+    - images/avatar_default.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

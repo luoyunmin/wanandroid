@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:wanandroid/routes/main_route.dart';
+import 'package:wanandroid/common/Global.dart';
+import 'package:wanandroid/data/wanandroid_options.dart';
+import 'package:wanandroid/network/HttpUtil.dart';
+import 'package:wanandroid/pages/main_page.dart';
 import 'package:flutter_gen/gen_l10n/wan_android_localizations.dart';
+import 'package:wanandroid/router.dart';
+import 'package:wanandroid/wanandroid_theme_data.dart';
 
 void main() {
+  HttpUtil.init();
   runApp(const MyApp());
+  Global.init();
 }
 
 class MyApp extends StatelessWidget {
@@ -13,38 +20,32 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-        tabBarTheme: const TabBarTheme(dividerColor: Colors.transparent)
+    return ModelBinding(
+      initialModel: const WanAndroidOptions(
+        themeMode: ThemeMode.system, locale: null, user: null,),
+      child: Builder(
+        builder: (context) {
+          var options = WanAndroidOptions.of(context);
+          return MaterialApp(
+            themeMode: options.themeMode,
+            theme: WanAndroidThemeData.lightThemeData,
+            darkTheme: WanAndroidThemeData.darkThemeData,
+            supportedLocales: const [Locale("zh"), Locale("en")],
+            localizationsDelegates: const [
+              WanAndroidLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate
+            ],
+            localeListResolutionCallback: (locale, supportLocals) {
+
+            },
+            onGenerateRoute: (setting) =>
+                RouteConfiguration.onGenerateRoute(setting),
+            home: MainPage(),
+          );
+        },
       ),
-      home: MainRoute(),
-      supportedLocales: const [
-        Locale("zh"),
-        Locale("en")
-      ],
-      localizationsDelegates: const [
-        WanAndroidLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate
-      ],
     );
   }
 }
