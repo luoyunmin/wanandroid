@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
@@ -65,7 +66,7 @@ class _HomePageState extends State<HomePage>
           aspectRatio: 9 / 5,
           child: Swiper(
               itemBuilder: (context, index) =>
-                  Image.network(_bannerData[index].imagePath),
+                  CachedNetworkImage(imageUrl: _bannerData[index].imagePath),
               itemCount: _bannerData.length),
         ),
       );

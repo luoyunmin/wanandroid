@@ -8,7 +8,11 @@ import 'package:wanandroid/pages/questions_page.dart';
 import 'package:wanandroid/widgets/bottom_bar_item.dart';
 import 'package:flutter_gen/gen_l10n/wan_android_localizations.dart';
 
+import '../data/wanandroid_options.dart';
+import '../models/User.dart';
+
 class MainPage extends StatefulWidget {
+
   @override
   _MainPageState createState() => _MainPageState();
 }

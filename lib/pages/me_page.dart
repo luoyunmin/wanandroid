@@ -1,7 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:wanandroid/data/wanandroid_options.dart';
 import 'package:wanandroid/models/Me.dart';
 import 'package:flutter_gen/gen_l10n/wan_android_localizations.dart';
+import 'package:wanandroid/network/HttpUtil.dart';
+
+import '../models/Resp.dart';
+import '../models/User.dart';
+import '../util/Log.dart';
 
 class MePage extends StatefulWidget {
   @override
@@ -10,8 +17,45 @@ class MePage extends StatefulWidget {
 
 class _MePageState extends State<MePage> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var local = WanAndroidLocalizations.of(context);
+    User? user = WanAndroidOptions.of(context).user;
+    Widget loginWidget;
+    if (user == null) {
+      loginWidget = Padding(
+        padding: EdgeInsets.only(top: 16),
+        child: GestureDetector(
+          child: Text("去登录"),
+          onTap: () {
+            Navigator.of(context).pushNamed("not_login");
+          },
+        ),
+      );
+    } else {
+      loginWidget = Padding(
+        padding: EdgeInsets.only(top: 16),
+        child: GestureDetector(
+          child: Text(user.username ?? ""),
+          onTap: () {
+            _requestLogout(() {
+              WanAndroidOptions.update(
+                  context, WanAndroidOptions.of(context).copyWith(user: null));
+            });
+          },
+        ),
+      );
+    }
     Widget header = Container(
         color: Colors.blue,
         child: Center(
@@ -23,15 +67,7 @@ class _MePageState extends State<MePage> {
                 height: 100,
                 width: 100,
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 16),
-                child: GestureDetector(
-                  child: Text("去登录"),
-                  onTap: () {
-                    Navigator.of(context).pushNamed("not_login");
-                  },
-                ),
-              )
+              loginWidget
             ],
           ),
         ));
@@ -51,7 +87,16 @@ class _MePageState extends State<MePage> {
         .toList());
     return Scaffold(
       appBar: AppBar(),
-      body: Column(children: items),
+      body: ListView(children: items),
     );
+  }
+
+  void _requestLogout(Function() callback) async {
+    Resp<dynamic> resp = await HttpUtil.logout();
+    if (resp.errorCode == 0) {
+      var sharedPreference = await SharedPreferences.getInstance();
+      sharedPreference.remove("user");
+      callback.call();
+    }
   }
 }

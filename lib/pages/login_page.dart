@@ -6,12 +6,16 @@ import 'package:wanandroid/network/HttpUtil.dart';
 import '../models/User.dart';
 
 class LoginPage extends StatefulWidget {
+
+  const LoginPage({required this.onOptionsChange});
+
+  final ValueChanged<User> onOptionsChange;
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   late TextEditingController _usernameController;
   late TextEditingController _passwordController;
 
@@ -56,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
             padding: const EdgeInsets.only(top: 24),
             child: GestureDetector(
               onTap: () {
-                _requestLogin();
+                _requestLogin(context);
               },
               child: Container(
                 alignment: Alignment.center,
@@ -79,7 +83,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _requestLogin() async {
-    User user = await HttpUtil.login(_usernameController.text, _passwordController.text);
+  void _requestLogin(BuildContext context) async {
+    User user = await HttpUtil.login(
+        _usernameController.text, _passwordController.text);
+    widget.onOptionsChange(user);
   }
 }

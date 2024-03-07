@@ -1,8 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/wan_android_localizations.dart';
+import 'package:wanandroid/data/wanandroid_options.dart';
 import 'package:wanandroid/pages/login_page.dart';
 import 'package:wanandroid/pages/register_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'dart:convert';
+import '../models/User.dart';
 
 class NotLoginPage extends StatefulWidget {
   @override
@@ -20,6 +25,12 @@ class _NotLoginPageState extends State<NotLoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    var options = WanAndroidOptions.of(context);
+    onOptionsChange(user) {
+      _saveUser(user);
+      WanAndroidOptions.update(context, options.copyWith(user: user));
+      Navigator.of(context).pop();
+    }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -39,11 +50,23 @@ class _NotLoginPageState extends State<NotLoginPage> {
           Expanded(
             child: PageView(
               controller: _pageController,
-              children: [LoginPage(), RegisterPage()],
+              children: [
+                LoginPage(
+                  onOptionsChange: onOptionsChange,
+                ),
+                RegisterPage(
+                  onOptionsChange: onOptionsChange,
+                )
+              ],
             ),
           )
         ],
       ),
     );
+  }
+
+  _saveUser(User user) async {
+    var sharedPreference = await SharedPreferences.getInstance();
+    sharedPreference.setString("user",  jsonEncode(user));
   }
 }

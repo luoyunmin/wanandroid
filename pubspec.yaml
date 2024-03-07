@@ -41,7 +41,12 @@ dependencies:
   shared_preferences: ^2.2.2
   # 网络
   dio: ^5.4.0
+  # cookie持有，需要和path_provider一起使用
+  dio_cookie_manager: ^3.1.1
+  path_provider: ^2.1.2
+  # 状态通知
   provider: ^6.1.1
+  # 图片缓存
   cached_network_image: ^3.3.1
   # 多语言
   intl: any

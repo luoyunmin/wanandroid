@@ -6,10 +6,12 @@ import 'package:wanandroid/network/HttpUtil.dart';
 import 'package:wanandroid/pages/main_page.dart';
 import 'package:flutter_gen/gen_l10n/wan_android_localizations.dart';
 import 'package:wanandroid/router.dart';
+import 'package:wanandroid/util/Log.dart';
 import 'package:wanandroid/wanandroid_theme_data.dart';
 
-void main() {
-  HttpUtil.init();
+import 'models/User.dart';
+
+void main() async {
   runApp(const MyApp());
   Global.init();
 }
@@ -22,7 +24,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ModelBinding(
       initialModel: const WanAndroidOptions(
-        themeMode: ThemeMode.system, locale: null, user: null,),
+        themeMode: ThemeMode.system,
+        locale: null,
+        user: null,
+      ),
       child: Builder(
         builder: (context) {
           var options = WanAndroidOptions.of(context);
@@ -37,9 +42,7 @@ class MyApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalMaterialLocalizations.delegate
             ],
-            localeListResolutionCallback: (locale, supportLocals) {
-
-            },
+            localeListResolutionCallback: (locale, supportLocals) {},
             onGenerateRoute: (setting) =>
                 RouteConfiguration.onGenerateRoute(setting),
             home: MainPage(),

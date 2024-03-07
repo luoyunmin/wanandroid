@@ -7,6 +7,11 @@ import '../models/User.dart';
 import '../util/Log.dart';
 
 class RegisterPage extends StatefulWidget {
+
+  const RegisterPage({required this.onOptionsChange});
+
+  final ValueChanged<User> onOptionsChange;
+
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
@@ -92,6 +97,6 @@ class _RegisterPageState extends State<RegisterPage> {
   void _requestRegister() async {
     User user = await HttpUtil.register(_usernameController.text, _passwordController.text,
         _rePasswordController.text);
-    Log.i("result: $user");
+    widget.onOptionsChange(user);
   }
 }

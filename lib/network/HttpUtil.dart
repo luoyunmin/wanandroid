@@ -1,6 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:wanandroid/models/FavoriteArticle.dart';
 import 'package:wanandroid/models/HotKey.dart';
 import 'package:wanandroid/models/RespData.dart';
+import 'package:wanandroid/network/cookie_interceptor.dart';
+import 'package:cookie_jar/cookie_jar.dart';
 
 import '../models/Article.dart';
 import '../models/BannerModel.dart';
@@ -13,9 +17,15 @@ import '../util/Log.dart';
 class HttpUtil {
   const HttpUtil._();
 
-  static Dio dio = Dio(BaseOptions(baseUrl: 'https://www.wanandroid.com'));
+  static late Dio dio;
 
-  static void init() {
+  static void init() async {
+    dio = Dio(BaseOptions(baseUrl: 'https://www.wanandroid.com'));
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final appDocPath = appDocDir.path;
+    final jar = PersistCookieJar(
+        ignoreExpires: true, storage: FileStorage("$appDocPath/.cookies/"));
+    dio.interceptors.add(CookieInterceptor(jar));
     dio.interceptors.add(LogInterceptor(responseBody: true));
   }
 
@@ -113,9 +123,35 @@ class HttpUtil {
     return resp.data;
   }
 
-  static Future<User> logout() async {
+  static Future<Resp<dynamic>> logout() async {
     var result = await dio.get("/user/logout/json");
-    Resp<User> resp = Resp.fromJson(result.data, (json) => User.fromJson(json));
+    Log.i("logout: $result");
+    Resp<dynamic> resp = Resp.fromJson(result.data, (json) => dynamic);
+    return resp;
+  }
+
+  static Future<RespData<FavoriteArticle>> getFavorites(int page) async {
+    var result = await dio.get("/lg/collect/list/0/json");
+    Log.i("getFavorites: ${result.data}");
+    Resp<RespData<FavoriteArticle>> resp = Resp.fromJson(
+        result.data,
+        (json) =>
+            RespData.fromJson(json, (json) => FavoriteArticle.fromJson(json)));
     return resp.data;
   }
+
+  static Future<T> get<T>(String url, JsonConvert convert) async {
+    var result = await dio.get(url);
+    T resp = convert(result.data);
+    return resp;
+  }
+
+  static Future<T> post<T>(
+      String url, FormData data, JsonConvert convert) async {
+    var result = await dio.post(url, data: data);
+    T resp = convert(result.data);
+    return resp;
+  }
 }
+
+typedef JsonConvert<T> = T Function(String json);
